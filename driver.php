@@ -1,4 +1,18 @@
-<?php 
+<?php
+
+session_start();
+//Checking User Logged or Not
+if(empty($_SESSION['user'])){
+ header('location:index.php');
+}
+//Restrict admin or Moderator to Access user.php page
+if($_SESSION['user']['role']=='admin'){
+ header('location:admin.php');
+}
+if($_SESSION['user']['role']=='moderator'){
+ header('location:moderator.php');
+}
+ 
 include 'header.php';
 ?>
 

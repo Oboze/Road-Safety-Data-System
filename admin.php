@@ -1,21 +1,27 @@
 <?php 
+
 session_start();
+//Checking User Logged or Not
+
 //Checking User Logged or Not
 if(empty($_SESSION['user'])){
  header('location:index.php');
 }
-//Restrict admin or Moderator to Access user.php page
-if($_SESSION['user']['role']=='admin'){
- header('location:admin.php');
+//Restrict User or Moderator to Access Admin.php page
+if($_SESSION['user']['role']=='user'){
+ header('location:user.php');
 }
 if($_SESSION['user']['role']=='moderator'){
  header('location:moderator.php');
 }
 
 
+include 'headeradmin.php';
 
-include 'header.php' ?>
 
+
+
+?>
 
 <!-- custom css -->
     <style>
@@ -25,13 +31,15 @@ include 'header.php' ?>
     .mt0{ margin-top:0; }
     </style>
 
+
+
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Driver
-        <small>Information</small>
+        Administration
+        <small>Manage Users</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
@@ -42,18 +50,14 @@ include 'header.php' ?>
     <!-- Main content -->
     <section class="content container-fluid">
 
-      <!--------------------------
-        | Your Page Content Here |
-        -------------------------->
-
-      <?php
+        <?php
 // include database connection
 include 'config.php';
  
 // delete message prompt will be here
  
 // select all data
-$query = "SELECT * FROM Driver ORDER BY DriverID DESC";
+$query = "SELECT UserID, Firstname, Lastname, Username, User_role, created_at FROM Users ORDER BY UserID DESC";
 $stmt = $con->prepare($query);
 $stmt->execute();
  
@@ -61,11 +65,12 @@ $stmt->execute();
 $num = $stmt->rowCount();
  
 // link to create record form
-//echo "<a href='create.php' class='btn btn-primary m-b-1em'>Create New User</a>";
+echo "<a href='create.php' class='btn btn-primary m-b-1em'>Create New User</a>";
  
 //check if more than 0 record found
 if($num>0){
-/*  echo "<div class='row'>";
+
+  echo "<div class='row'>";
       echo  "<div class='col-xs-12'>";
        echo  " <div class='box'>";
         echo  " <div class='box-header'>";
@@ -86,29 +91,18 @@ if($num>0){
              echo "<table class='table table-hover'>";
  
     // data from database will be here
-  //echo "<table class='table table-hover table-responsive table-bordered'>";//start table*/
-
-        echo  "<div class='row'>";
-        echo "<div class='col-sm-12'>";
-        echo "<div class='box'>";
-         echo   "<div class='box-header'>";
-            echo  "<h3 class='box-title'>Drivers </h3><a href='driver.php' class='pull-right btn btn-info'> Add Driver </a>";
-           echo "</div>";
-            echo "<!-- /.box-header -->";
-            echo "<div class='box-body'>";
-              echo "<table id='example1' class='table table-bordered table-striped'>";
+  //echo "<table class='table table-hover table-responsive table-bordered'>";//start table
  
     //creating our table heading
-    echo "<thead>";
     echo "<tr>";
+        echo "<th>UserID</th>";
         echo "<th>First Name</th>";
-        echo "<th>Middle Name</th>";
         echo "<th>Last Name</th>";
-        echo "<th>Gender</th>";
-        echo "<th>National ID</th>";
+        echo "<th>Username</th>";
+        echo "<th>User Role</th>";
+        echo "<th>Account Created At</th>";
         echo "<th> Action </th>";
     echo "</tr>";
-    echo "</thead>";
      
     // table body will be here
 
@@ -123,32 +117,24 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
      
     // creating new table row per record
     echo "<tr>";
-        
+        echo "<td>{$UserID}</td>";
         echo "<td>{$Firstname}</td>";
         echo "<td>{$Lastname}</td>";
-        echo "<td>{$Middlename}</td>";
-        echo "<td>{$Sex}</td>";
-        echo "<td>{$National_ID}</td>";
+        echo "<td>{$Username}</td>";
+        echo "<td>{$User_role}</td>";
+        echo "<td>{$created_at}</td>";
         echo "<td>";
             // read one record 
-            echo "<a href='view_driver.php?id={$DriverID}' class='btn btn-info m-r-1em'>View</a>";
+            echo "<a href='read_one.php?id={$UserID}' class='btn btn-info m-r-1em'>Read</a>";
              
             // we will use this links on next part of this post
-            echo "<a href='update_driver.php?id={$DriverID}' class='btn btn-primary m-r-1em'>Edit</a>";
+            echo "<a href='update.php?id={$UserID}' class='btn btn-primary m-r-1em'>Edit</a>";
  
             // we will use this links on next part of this post
-            echo "<a href='#' onclick='delete_user({$DriverID});'  class='btn btn-danger'>Delete</a>";
+            echo "<a href='#' onclick='delete_user({$UserID});'  class='btn btn-danger'>Delete</a>";
         echo "</td>";
     echo "</tr>";
 }
-
-                 /* <th>First Name</th>
-                  <th>Middle Name</th>
-                  <th>Last Name</th>
-                  <th>Gender</th>
-                  <th>National ID</th>
-                </tr>
-                </tfoot>*/
  
 // end table
 echo "</table>";
@@ -160,17 +146,12 @@ else{
     echo "<div class='alert alert-danger'>No records found.</div>";
 }
 ?>
-     
-                  
-              
-            </div>
+
+</div>
             <!-- /.box-body -->
           </div>
           <!-- /.box -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+      
 
     </section>
     <!-- /.content -->
@@ -178,4 +159,7 @@ else{
   <!-- /.content-wrapper -->
 
 
-<?php include 'footer.php'?>
+
+
+
+<?php include 'footeradmin.php';?>

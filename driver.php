@@ -26,7 +26,7 @@ include 'header.php';
         <small>Driver Information</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home </a></li>
+        <li><a href="dashboard.php"><i class="fa fa-dashboard"></i> Home </a></li>
         <li class="active">Dashboard</li>
       </ol>
     </section>
@@ -48,7 +48,7 @@ include 'header.php';
             <!-- form start -->
 
             <?php
-if($_POST){
+if($_POST && isset($_POST['firstname'] )){
  
     // include database connection
     include 'config.php';
@@ -56,7 +56,7 @@ if($_POST){
     try{
      
         // insert query
-        $query = "INSERT INTO Driver SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, PassportNo=:passport";
+        $query = "INSERT INTO Driver SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, PassportNo=:passport, image=:image";
  
         // prepare query for execution
         $stmt = $con->prepare($query);
@@ -71,6 +71,12 @@ if($_POST){
         $nationalid=htmlspecialchars(strip_tags($_POST['nationalid']));
         $passport=htmlspecialchars(strip_tags($_POST['passport']));
 
+        // new 'image' field
+        $image=!empty($_FILES["image"]["name"])
+        ? sha1_file($_FILES['image']['tmp_name']) . "-" . basename($_FILES["image"]["name"])
+        : "";
+        $image=htmlspecialchars(strip_tags($image));
+
  
         // bind the parameters
         $stmt->bindParam(':firstname', $firstname);
@@ -81,14 +87,80 @@ if($_POST){
         $stmt->bindParam(':address',$address);
         $stmt->bindParam(':nationalid',$nationalid);
         $stmt->bindParam(':passport',$passport);
+        $stmt->bindParam(':image', $image);
         // specify when this record was inserted to the database
         
          
         // Execute the query
         if($stmt->execute()){
-            echo "<div class='alert alert-success'>Record was saved.</div>";
+           // echo "<div class='alert alert-success'>Record was saved.</div>";
+
+
+            echo "<div class=\"alert alert-success alert-dismissible\">";
+              echo  "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
+                echo "<h4><i class=\"icon fa fa-check\"></i> Success!</h4>";
+                echo "Record was saved";
+              echo "</div>";
+
+            // now, if image is not empty, try to upload the image
+        if($image){
+         
+            // sha1_file() function is used to make a unique file name
+            $target_directory = "uploads/";
+            $target_file = $target_directory . $image;
+            $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+         
+            // error message is empty
+            $file_upload_error_messages="";
+         
+        }
+
+        // make sure that file is a real image
+        $check = getimagesize($_FILES["image"]["tmp_name"]);
+        if($check!==false){
+            // submitted file is an image
+        }else{
+            $file_upload_error_messages.="<div>Submitted file is not an image.</div>";
+        }
         }else{
             echo "<div class='alert alert-danger'>Unable to save record.</div>";
+        }
+
+        // make sure file does not exist
+        if(file_exists($target_file)){
+            $file_upload_error_messages.="<div>Image already exists. Try to change file name.</div>";
+        }
+        // make sure submitted file is not too large, can't be larger than 1 MB
+        if($_FILES['image']['size'] > (1024000)){
+            $file_upload_error_messages.="<div>Image must be less than 1 MB in size.</div>";
+        }
+
+        // make sure the 'uploads' folder exists
+        // if not, create it
+        if(!is_dir($target_directory)){
+            mkdir($target_directory, 0777, true);
+        }
+
+        // if $file_upload_error_messages is still empty
+        if(empty($file_upload_error_messages)){
+            // it means there are no errors, so try to upload the file
+            if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
+                // it means photo was uploaded
+            }else{
+                echo "<div class='alert alert-danger'>";
+                    echo "<div>Unable to upload photo.</div>";
+                    echo "<div>Update the record to upload photo.</div>";
+                echo "</div>";
+            }
+        }
+         
+        // if $file_upload_error_messages is NOT empty
+        else{
+            // it means there are some errors, so show them to user
+            echo "<div class='alert alert-danger'>";
+                echo "<div>{$file_upload_error_messages}</div>";
+                echo "<div>Update the record to upload photo.</div>";
+            echo "</div>";
         }
          
     }
@@ -100,27 +172,27 @@ if($_POST){
 }
 ?>
 
-            <form class="form-horizontal action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post"">
+            <form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" enctype="multipart/form-data" id="driverform">
               <div class="box-body">
                 <div class="form-group">
                   <label for="firstname" class="col-sm-2 control-label">First Name</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" required="">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" required="" pattern="^[A-Za-z]+$" title="Only a single name is allowed. Also name cannot include a number" >
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="lastname" class="col-sm-2 control-label">Last Name</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required="">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name"   required="" pattern="^[A-Za-z]+$" title="Only a single name is allowed. Also name cannot include a number">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="middlename" class="col-sm-2 control-label">Middle Name</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="middlename" name="middlename" placeholder="Middle Name" required="">
+                    <input type="text" class="form-control" id="middlename" name="middlename" placeholder="Middle Name"  pattern="^[A-Za-z]+$" title="Only a single name is allowed. Also name cannot include a number"  required="">
                   </div>
                 </div>
 
@@ -162,15 +234,15 @@ if($_POST){
                   <label for="nationalid" class="col-sm-2 control-label">National ID Number</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="nationalid" name="nationalid" placeholder="National ID Number">
+                    <input type="number" class="form-control" id="nationalid" name="nationalid" placeholder="National ID Number">
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="passport" class="col-sm-2 control-label">Passport Number</label>
+                  <label for="passport" class="col-sm-2 control-label">Driving License Number</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="passport" name="passport" placeholder="Passport Number">
+                    <input type="text" class="form-control" id="passport" name="passport" placeholder="Driving License Number">
                   </div>
                 </div>
 
@@ -178,7 +250,7 @@ if($_POST){
                   <label for="image" class="col-sm-2 control-label">Image</label>
 
                   <div class="col-sm-10">
-                    <input type="file" id="image" name="driverimage">
+                    <input type="file" id="image" name="image" required="">
                   </div>
                 </div>
                 <!-- /.input group -->
@@ -193,6 +265,9 @@ if($_POST){
                   </div>
                 </div>
               </div>-->
+              
+
+              
               
               <!-- /.box-body -->
               <div class="box-footer">

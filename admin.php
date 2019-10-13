@@ -55,6 +55,12 @@ include 'headeradmin.php';
 include 'config.php';
  
 // delete message prompt will be here
+$action = isset($_GET['action']) ? $_GET['action'] : "";
+ 
+// if it was redirected from delete.php
+if($action=='deleted'){
+    echo "<div class='alert alert-success'>User profile was deleted.</div>";
+}
  
 // select all data
 $query = "SELECT UserID, Firstname, Lastname, Username, User_role, created_at FROM Users ORDER BY UserID DESC";
@@ -95,12 +101,12 @@ if($num>0){
  
     //creating our table heading
     echo "<tr>";
-        echo "<th>UserID</th>";
+        //echo "<th>UserID</th>";
         echo "<th>First Name</th>";
         echo "<th>Last Name</th>";
         echo "<th>Username</th>";
         echo "<th>User Role</th>";
-        echo "<th>Account Created At</th>";
+        //echo "<th>Account Created At</th>";
         echo "<th> Action </th>";
     echo "</tr>";
      
@@ -117,18 +123,18 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
      
     // creating new table row per record
     echo "<tr>";
-        echo "<td>{$UserID}</td>";
+        //echo "<td>{$UserID}</td>";
         echo "<td>{$Firstname}</td>";
         echo "<td>{$Lastname}</td>";
         echo "<td>{$Username}</td>";
         echo "<td>{$User_role}</td>";
-        echo "<td>{$created_at}</td>";
+       // echo "<td>{$created_at}</td>";
         echo "<td>";
             // read one record 
-            echo "<a href='read_one.php?id={$UserID}' class='btn btn-info m-r-1em'>Read</a>";
+            echo "<a href='view_user.php?id={$UserID}' class='btn btn-info m-r-1em'>Read</a>";
              
             // we will use this links on next part of this post
-            echo "<a href='update.php?id={$UserID}' class='btn btn-primary m-r-1em'>Edit</a>";
+            echo "<a href='update_user.php?id={$UserID}' class='btn btn-primary m-r-1em'>Edit</a>";
  
             // we will use this links on next part of this post
             echo "<a href='#' onclick='delete_user({$UserID});'  class='btn btn-danger'>Delete</a>";
@@ -157,7 +163,18 @@ else{
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-
+                <script type='text/javascript'>
+                // confirm record deletion
+                function delete_user( id ){
+                     
+                    var answer = confirm('Are you sure?');
+                    if (answer){
+                        // if user clicked ok, 
+                        // pass the id to delete.php and execute the delete query
+                        window.location = 'delete_user.php?id=' + id;
+                    } 
+                }
+</script>
 
 
 

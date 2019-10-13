@@ -34,8 +34,8 @@ include 'header.php' ?>
         <small>Information</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
+        <li><a href="dashboard.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li class="active">Driver Listing</li>
       </ol>
     </section>
 
@@ -92,7 +92,7 @@ if($num>0){
         echo "<div class='col-sm-12'>";
         echo "<div class='box'>";
          echo   "<div class='box-header'>";
-            echo  "<h3 class='box-title'>Drivers </h3><a href='driver.php' class='pull-right btn btn-info'> Add Driver </a>";
+            echo  "<h3 class='box-title'>Drivers </h3><a href='driver.php' class='pull-right btn  btn-danger'> Add Driver </a>";
            echo "</div>";
             echo "<!-- /.box-header -->";
             echo "<div class='box-body'>";
@@ -134,10 +134,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
             echo "<a href='view_driver.php?id={$DriverID}' class='btn btn-info m-r-1em'>View</a>";
              
             // we will use this links on next part of this post
-            echo "<a href='update_driver.php?id={$DriverID}' class='btn btn-primary m-r-1em'>Edit</a>";
+            echo "<a href='updatedriver.php?id={$DriverID}' class='btn btn-primary m-r-1em'>Edit</a>";
  
             // we will use this links on next part of this post
-            echo "<a href='#' onclick='delete_user({$DriverID});'  class='btn btn-danger'>Delete</a>";
+            echo "<a href='#' onclick='delete_user({$DriverID});'  class='btn btn-danger disabled'>Delete</a>";
         echo "</td>";
     echo "</tr>";
 }

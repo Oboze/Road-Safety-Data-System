@@ -111,7 +111,8 @@
     //Date picker
     $('#datepicker').datepicker({
       autoclose: true,
-      format: 'yyyy-mm-dd'
+      format: 'yyyy-mm-dd',
+      setDate:new Date()
     })
 
     //iCheck for checkbox and radio inputs
@@ -137,7 +138,9 @@
 
     //Timepicker
     $('.timepicker').timepicker({
-      showInputs: false
+      showInputs: false,
+      defaultTime: 'current',
+      minuteStep: 1
     })
   })
 </script>

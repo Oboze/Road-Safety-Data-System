@@ -127,9 +127,9 @@ if($_POST && isset($_POST['firstname'] )){
         }
 
         // make sure file does not exist
-        if(file_exists($target_file)){
+        /*if(file_exists($target_file)){
             $file_upload_error_messages.="<div>Image already exists. Try to change file name.</div>";
-        }
+        }*/
         // make sure submitted file is not too large, can't be larger than 1 MB
         if($_FILES['image']['size'] > (1024000)){
             $file_upload_error_messages.="<div>Image must be less than 1 MB in size.</div>";
@@ -234,7 +234,8 @@ if($_POST && isset($_POST['firstname'] )){
                   <label for="nationalid" class="col-sm-2 control-label">National ID Number</label>
 
                   <div class="col-sm-10">
-                    <input type="number" class="form-control" id="nationalid" name="nationalid" placeholder="National ID Number">
+                    <input type="number" class="form-control" id="nationalid" name="nationalid" placeholder="National ID Number" onBlur="checkIdAvailability()"><span id="id-availability-status"></span>
+
                   </div>
                 </div>
 
@@ -282,5 +283,20 @@ if($_POST && isset($_POST['firstname'] )){
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+  <script>
+function checkIdAvailability() {
+$("#loaderIcon").show();
+jQuery.ajax({
+url: "check_availability.php",
+data:'nationalid='+$("#nationalid").val(),
+type: "POST",
+success:function(data){
+$("#id-availability-status").html(data);
+$("#loaderIcon").hide();
+},
+error:function (){}
+});
+}
+</script>
 
   <?php include 'footer.php'?>

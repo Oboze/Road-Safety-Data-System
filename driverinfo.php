@@ -97,6 +97,7 @@ if($num>0){
             echo "<!-- /.box-header -->";
             echo "<div class='box-body'>";
               echo "<table id='example1' class='table table-bordered table-striped'>";
+              //echo "<table  class='table table-bordered table-striped'>";
  
     //creating our table heading
     echo "<thead>";

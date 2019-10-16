@@ -81,9 +81,7 @@ catch(PDOException $exception){
 
 $penaltyscore=0;
 
-if ($penaltyscore===NULL){
-    $penaltyscore="No Score Yet";
-}else{
+
 
 $totalSumQuery = "SELECT SUM(Risk_Score) AS Penalty FROM Offence WHERE DriverID=?";
 $stmt1 = $con->prepare($totalSumQuery);
@@ -94,6 +92,18 @@ $stmt1->execute();
 $row1 = $stmt1->fetch(PDO::FETCH_ASSOC);
 
 $penaltyscore=$row1['Penalty'];
+
+if ($penaltyscore===NULL){
+    $penaltyscore="No Points";
+    $accidentrisk="Very Low Risk";
+}elseif($penaltyscore>0 && $penaltyscore<=5){
+  $accidentrisk="Low Risk";
+}elseif($penaltyscore>5 && $penaltyscore<=12){
+  $accidentrisk="Moderate Risk";
+}elseif($penaltyscore>12 && $penaltyscore<=25){
+  $accidentrisk="High Risk";
+}elseif($penaltyscore>25){
+  $accidentrisk="Dangerous";
 }
 
 
@@ -145,7 +155,8 @@ $penaltyscore=$row1['Penalty'];
             </div> 
 
             <div class="col-md-4">
-            <p style="font-weight:900; font-size:16px;"> Risk Score: <span style="font-weight:500;"> <?php echo $penaltyscore?></span> </p>
+            <p style="font-weight:900; font-size:16px;"> Penalty Score: <span style="font-weight:500;"> <?php echo $penaltyscore;?></span> </p>
+            <p style="font-weight:900; font-size:16px;"> Accident Risk: <span style="font-weight:500;"> <?php echo $accidentrisk?></span> </p>
             
 
             </div> 
@@ -219,8 +230,8 @@ if($num>0){
            echo "</div>";
            //s echo "<!-- /.box-header -->";
             echo "<div class='box-body'>";
-             // echo "<table id='example1' class='table table-bordered table-striped'>";
-              echo "<table class='table table-bordered table-striped'>";
+              echo "<table id='example1' class='table table-bordered table-striped'>";
+              //echo "<table class='table table-bordered table-striped'>";
  
  
     //creating our table heading
@@ -231,6 +242,7 @@ if($num>0){
         echo "<th>Date</th>";
         echo "<th>Time</th>";
         echo "<th>Description</th>";
+        echo "<th>Action Taken</th>";
        // echo "<th> Action </th>";
     echo "</tr>";
     echo "</thead>";
@@ -254,6 +266,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
         echo "<td>{$Date}</td>";
         echo "<td>{$Time}</td>";
         echo "<td>{$Description}</td>";
+        echo "<td>{$Action_Taken}</td>";
         /*echo "<td>";
             // read one record 
             echo "<a href='view_driver.php?id={$DriverID}' class='btn btn-info m-r-1em'>View</a>";
@@ -282,7 +295,7 @@ echo "</table>";
  
 // if no records found
 else{
-    echo "<div class='alert alert-success'>Drivers Offence Record is Clean! Hurray!.</div>";
+    echo "<div class='alert alert-success'>Driver's Offence Record is Clean! Hurray!.</div>";
 }
 ?>
                 

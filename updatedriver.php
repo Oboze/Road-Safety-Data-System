@@ -58,7 +58,7 @@ include 'header.php';
 			// read current record's data
 			try {
 			    // prepare select query
-			    $query = "SELECT DriverID, Firstname, Lastname, Middlename, DOB, Sex, Address, National_ID, PassportNo FROM Driver WHERE DriverID = ? LIMIT 0,1";
+			    $query = "SELECT DriverID, Firstname, Lastname, Middlename, DOB, Sex, Address, National_ID, LicenseNO FROM Driver WHERE DriverID = ? LIMIT 0,1";
 			    $stmt = $con->prepare( $query );
 			     
 			    // this is the first question mark
@@ -78,7 +78,7 @@ include 'header.php';
 			    $gender=$row['Sex'];
 			    $address=$row['Address'];
 			    $nationalid=$row['National_ID'];
-			    $passport=$row['PassportNo'];
+			    $passport=$row['LicenseNO'];
 			}
 			 
 			// show error
@@ -98,7 +98,7 @@ include 'header.php';
 						        // in this case, it seemed like we have so many fields to pass and 
 						        // it is better to label them and not use question marks
 						        $query = "UPDATE Driver 
-						                    SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, PassportNO=:passport 
+						                    SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, LicenseNO=:license 
 						                    WHERE DriverID = :id";
 						 
 						        // prepare query for excecution
@@ -112,7 +112,7 @@ include 'header.php';
 						        $gender=htmlspecialchars(strip_tags($_POST['gender']));
 						        $address=htmlspecialchars(strip_tags($_POST['address']));
 						        $nationalid=htmlspecialchars(strip_tags($_POST['nationalid']));
-						        $passport=htmlspecialchars(strip_tags($_POST['passport']));
+						        $license=htmlspecialchars(strip_tags($_POST['license']));
 						 
 						        // bind the parameters
 						        $stmt->bindParam(':firstname', $firstname);
@@ -122,7 +122,7 @@ include 'header.php';
 						        $stmt->bindParam(':sex',$gender);
 						        $stmt->bindParam(':address',$address);
 						        $stmt->bindParam(':nationalid',$nationalid);
-						        $stmt->bindParam(':passport',$passport);
+						        $stmt->bindParam(':license',$license);
 						        $stmt->bindParam(':id', $id);
 						         
 						        // Execute the query
@@ -212,7 +212,7 @@ include 'header.php';
                   <label for="passport" class="col-sm-2 control-label">Driving License Number</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="passport" name="passport" value="<?php echo htmlspecialchars($passport, ENT_QUOTES);  ?>" placeholder="Driving License Number">
+                    <input type="text" class="form-control" id="license" name="license" value="<?php echo htmlspecialchars($passport, ENT_QUOTES);  ?>" placeholder="Driving License Number">
                   </div>
                 </div>
 
@@ -253,6 +253,36 @@ include 'header.php';
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+  <script>
+function checkIdAvailability() {
+$("#loaderIcon").show();
+jQuery.ajax({
+url: "check_availability.php",
+data:'nationalid='+$("#nationalid").val(),
+type: "POST",
+success:function(data){
+$("#id-availability-status").html(data);
+$("#loaderIcon").hide();
+},
+error:function (){}
+});
+}
+
+function checkLicenseAvailability() {
+$("#loaderIcon").show();
+jQuery.ajax({
+url: "check_availability.php",
+data:'license='+$("#license").val(),
+type: "POST",
+success:function(data){
+$("#username-availability-status").html(data);
+$("#loaderIcon").hide();
+},
+error:function (){}
+});
+}
+</script>
 
 
 <?php include 'footer.php'?>

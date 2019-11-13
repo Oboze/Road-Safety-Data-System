@@ -184,9 +184,21 @@ desired effect
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
         <!-- Optionally, you can add icons to the links -->
-        <li ><a href="driverinfo.php"><i class="fa fa-automobile"></i> <span>Driver</span></a></li>
-        <li><a href="#"><i class="fa fa-ambulance"></i> <span>Accidents</span></a></li>
-        <li><a href="#"><i class="fa fa-ambulance"></i> <span>Vehicles</span></a></li>
+        <li ><a href="dashboard.php"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+        <!--<li ><a href="driverinfo.php"><i class="fa fa-user"></i> <span>Driver</span></a></li>-->
+        <li class="treeview">
+          <a href="#"><i class="fa fa-user"></i> <span>Driver</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="driverinfo.php"><i class="fa fa-circle-o"></i>Driver Listing and Search</a></li>
+            <li><a href="driverstats.php"><i class="fa fa-circle-o"></i>Driver Statistics and Reports</a></li>
+          </ul>
+        </li>-->
+        <li><a href="addaccident.php"><i class="fa fa-ambulance"></i> <span>Accidents</span></a></li>
+        <!--<li><a href="#"><i class="fa fa-car"></i> <span>Vehicles</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -197,7 +209,7 @@ desired effect
             <li><a href="#">Link in level 2</a></li>
             <li><a href="#">Link in level 2</a></li>
           </ul>
-        </li>
+        </li>-->
       </ul>
       <!-- /.sidebar-menu -->
     </section>

@@ -56,7 +56,7 @@ if($_POST && isset($_POST['firstname'] )){
     try{
      
         // insert query
-        $query = "INSERT INTO Driver SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, PassportNo=:passport, image=:image";
+        $query = "INSERT INTO Driver SET Firstname=:firstname, Lastname=:lastname, Middlename=:middlename, DOB=:dob, Sex=:sex, Address=:address, National_ID=:nationalid, Training=:training, LicenseNo=:license, image=:image";
  
         // prepare query for execution
         $stmt = $con->prepare($query);
@@ -69,7 +69,8 @@ if($_POST && isset($_POST['firstname'] )){
         $gender=htmlspecialchars(strip_tags($_POST['gender']));
         $address=htmlspecialchars(strip_tags($_POST['address']));
         $nationalid=htmlspecialchars(strip_tags($_POST['nationalid']));
-        $passport=htmlspecialchars(strip_tags($_POST['passport']));
+        $training=htmlspecialchars(strip_tags($_POST['training']));
+        $license=htmlspecialchars(strip_tags($_POST['license']));
 
         // new 'image' field
         $image=!empty($_FILES["image"]["name"])
@@ -86,7 +87,8 @@ if($_POST && isset($_POST['firstname'] )){
         $stmt->bindParam(':sex', $gender);
         $stmt->bindParam(':address',$address);
         $stmt->bindParam(':nationalid',$nationalid);
-        $stmt->bindParam(':passport',$passport);
+        $stmt->bindParam(':training',$training);
+        $stmt->bindParam(':license',$license);
         $stmt->bindParam(':image', $image);
         // specify when this record was inserted to the database
         
@@ -99,7 +101,8 @@ if($_POST && isset($_POST['firstname'] )){
             echo "<div class=\"alert alert-success alert-dismissible\">";
               echo  "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>";
                 echo "<h4><i class=\"icon fa fa-check\"></i> Success!</h4>";
-                echo "Record was saved";
+                echo "Record was saved. <br>";
+                echo "You can still proceed to add another Driver below.<i class=\"icon fa fa-smile-o\"></i> If not <a href='driverinfo.php'><h6>Click Here</h6></a> to go back to Driver Listing";
               echo "</div>";
 
             // now, if image is not empty, try to upload the image
@@ -147,20 +150,20 @@ if($_POST && isset($_POST['firstname'] )){
             if(move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)){
                 // it means photo was uploaded
             }else{
-                echo "<div class='alert alert-danger'>";
+            /*    echo "<div class='alert alert-danger'>";
                     echo "<div>Unable to upload photo.</div>";
                     echo "<div>Update the record to upload photo.</div>";
-                echo "</div>";
+                echo "</div>";*/
             }
         }
          
         // if $file_upload_error_messages is NOT empty
         else{
             // it means there are some errors, so show them to user
-            echo "<div class='alert alert-danger'>";
+         /*   echo "<div class='alert alert-danger'>";
                 echo "<div>{$file_upload_error_messages}</div>";
                 echo "<div>Update the record to upload photo.</div>";
-            echo "</div>";
+            echo "</div>";*/
         }
          
     }
@@ -239,11 +242,36 @@ if($_POST && isset($_POST['firstname'] )){
                   </div>
                 </div>
 
+
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Driver Training</label>
+
+                <div class="col-sm-10">
+                  <select class="form-control" style="width: 100%;" name="training">
+                  <option selected="selected">AA Driving School</option>
+                  <option>Rocky Driving School</option>
+                  <option>Heltz Driving School</option>
+                  <option>Petanns Driving School</option>
+                  <option>Senior Driving School</option>
+                  <option>Wings Driving School</option>
+                  <option>Imperial Driving School</option>
+                  <option>Sony Driving School</option>
+                  <option>Iqra Driving School</option>
+                  <option>Glory Driving School</option>
+                  <option>Private</option>
+                  
+                </select>
+
+                </div>
+                </div>
+
+
                 <div class="form-group">
                   <label for="passport" class="col-sm-2 control-label">Driving License Number</label>
 
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="passport" name="passport" placeholder="Driving License Number">
+                    <input type="text" class="form-control" id="license" name="license" placeholder="Driving License Number" onBlur="checkLicenseAvailability()">
+                    <span id="username-availability-status"></span>
                   </div>
                 </div>
 
@@ -272,7 +300,7 @@ if($_POST && isset($_POST['firstname'] )){
               
               <!-- /.box-body -->
               <div class="box-footer">
-                <!--<button type="submit" class="btn btn-default">Cancel</button>-->
+                <a type="button" href="driverinfo.php" class="btn btn-default pull-left">Back to Driver Listing</a>
                 <button type="submit" class="btn btn-info pull-right">Add Driver</button>
               </div>
               <!-- /.box-footer -->
@@ -283,6 +311,9 @@ if($_POST && isset($_POST['firstname'] )){
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+
+  
   <script>
 function checkIdAvailability() {
 $("#loaderIcon").show();
@@ -292,6 +323,20 @@ data:'nationalid='+$("#nationalid").val(),
 type: "POST",
 success:function(data){
 $("#id-availability-status").html(data);
+$("#loaderIcon").hide();
+},
+error:function (){}
+});
+}
+
+function checkLicenseAvailability() {
+$("#loaderIcon").show();
+jQuery.ajax({
+url: "check_availability.php",
+data:'license='+$("#license").val(),
+type: "POST",
+success:function(data){
+$("#username-availability-status").html(data);
 $("#loaderIcon").hide();
 },
 error:function (){}

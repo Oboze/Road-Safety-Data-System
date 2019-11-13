@@ -14,6 +14,7 @@ if($_SESSION['user']['role']=='moderator'){
 }
 
 include 'header.php';
+include 'config.php';
 ?>
 
 
@@ -33,6 +34,38 @@ include 'header.php';
 
     <!-- Main content -->
     <section class="content container-fluid">
+
+      <?php
+      // statistical queries
+      $query="SELECT Count(Sex) AS Male_Drivers From Driver Where Sex='Male'";
+      $stmt=$con->prepare($query);
+      $stmt->execute();
+
+      $maleDriversTotal=$stmt->fetch(PDO::FETCH_ASSOC);
+
+      $query="SELECT Count(Sex) AS Female_Drivers From Driver Where Sex='Female'";
+      $stmt=$con->prepare($query);
+      $stmt->execute();
+
+      $femaleDriversTotal=$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+      $query="SELECT Count(Driver.DriverID) AS GoodMaleDrivers From Driver Left Join Offence ON Driver.DriverID=Offence.DriverID WHERE Offence.OffenseID IS NULL AND Driver.Sex='Male'";
+      $stmt=$con->prepare($query);
+      $stmt->execute();
+
+      $goodMaleDrivers=$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+
+      $query="SELECT Count(Driver.DriverID) AS GoodFemaleDrivers From Driver Left Join Offence ON Driver.DriverID=Offence.DriverID WHERE Offence.OffenseID IS NULL AND Driver.Sex='Female'";
+      $stmt=$con->prepare($query);
+      $stmt->execute();
+
+      $goodFemaleDrivers=$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+      ?>
 
       <!--------------------------
         | Your Page Content Here |
@@ -102,6 +135,10 @@ include 'header.php';
       </div>
       <!-- /.row -->
       <!-- Main row -->
+
+
+      
+        </div>
 
     </section>
     <!-- /.content -->

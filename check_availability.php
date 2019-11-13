@@ -14,4 +14,14 @@ if($email_count>0) echo "<span style='color:red'> This National ID Number Alread
 //else echo "<span style='color:green'> National ID does not Exist.</span>";
 }
 
+//Code check user name
+if(!empty($_POST["license"])) {
+	$result1 = mysqli_query($con,"SELECT count(*) FROM Driver WHERE LicenseNO='" . $_POST["license"] . "'");
+	$row1 = mysqli_fetch_row($result1);
+	$user_count = $row1[0];
+	if($user_count>0) echo "<span style='color:red'> This License Number Already Exists! Record will not be added to the database </span>";
+	//else echo "<span style='color:green'> Username Available.</span>";
+}
+// End code check username
+
 ?>

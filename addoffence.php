@@ -1,8 +1,7 @@
 <?php
 
-//session_start();
-
-/*$id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
+/*session_start();
+$id=isset($_GET['id']) ? $_GET['id'] : die('ERROR: Record ID not found.');
 
 echo $id;*/
 
@@ -22,6 +21,8 @@ if($_SESSION['user']['role']=='moderator'){
 }
 
 //echo $_SESSION['driverid'];
+$driverid=$_SESSION['driverid'];
+//echo $driverid;
 include 'header.php' ?>
 
 
@@ -52,6 +53,7 @@ include 'header.php' ?>
           <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">Fill Form Details Below:</h3>
+              <a href="view_driver.php?id=<?php echo $driverid;?>" class="btn btn-success pull-right"> Back To Driver Profile</a>
             </div>
             <!-- /.box-header -->
 
@@ -76,7 +78,7 @@ if($_POST){
         $time=htmlspecialchars(strip_tags($_POST['offensetime']));
         $description=htmlspecialchars(strip_tags($_POST['offensedesc']));
         $actiontaken=htmlspecialchars(strip_tags($_POST['actiontaken']));
-        $driverid=$_SESSION['driverid'];
+        //$driverid=$_SESSION['driverid'];
 
 
         if ($offensetype=="Learner Failing to exhibit L Plates on the front and rear"){
@@ -133,7 +135,7 @@ if($_POST){
         elseif($offensetype=="Exceeding speed limit prescribed for the class of vehicle by 16-20kph"){
         	$score=5;
         }
-        elseif($offensetype=="Exceeding speed limti prescribed for the class of vehicle by 21 kph and over"){
+        elseif($offensetype=="Exceeding speed limit prescribed for the class of vehicle by 21 kph and over"){
         	$score=6;
         }
         elseif($offensetype=="Driving on or through pavement or a pedestrian walkway"){
@@ -172,6 +174,7 @@ if($_POST){
         // Execute the query
         if($stmt->execute()){
             echo "<div class='alert alert-success'>Record was saved.</div>";
+            
             
         }else{
             echo "<div class='alert alert-danger'>Unable to save record.</div>";
@@ -221,7 +224,7 @@ if($_POST){
                   <option>Exceeding speed limit prescribed for the class of vehicle by 6-10kph</option>
                   <option>Exceeding speed limit prescribed for the class of vehicle by 11-15kph</option>
                   <option>Exceeding speed limit prescribed for the class of vehicle by 16-20kph</option>
-                  <option>Exceeding speed limti prescribed for the class of vehicle by 21 kph and over</option>
+                  <option>Exceeding speed limit prescribed for the class of vehicle by 21 kph and over</option>
                   <option>Driving on or through pavement or a pedestrian walkway</option>
                   <option>Failure of a driver to stop when required to do so by a police officer in uniform</option>
                   <option>Failure of a driver to conform to the indications given by any traffic sign</option>
